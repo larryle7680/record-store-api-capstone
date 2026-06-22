@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
 import org.yearup.repository.CategoryRepository;
+import org.yearup.repository.ProductRepository;
 import org.yearup.service.CategoryService;
 import org.yearup.service.ProductService;
 
@@ -53,7 +54,7 @@ public class CategoriesController
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId
-        return null;
+        return ProductRepository;
     }
 
     // add annotation to call this method for a POST action
