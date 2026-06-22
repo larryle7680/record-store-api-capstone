@@ -37,12 +37,20 @@ public class CategoryService
 
     public Category update(int categoryId, Category category)
     {
+        //Make sure the CategoryID exists then provide a variable for it
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Can't find Category"));
+
+        //find the existing category and use .setName to update the name
+        existingCategory.setName(category.getName());
+
         // update category and return the updated category
-        return null;
+        return categoryRepository.save(category);
     }
 
     public void delete(int categoryId)
     {
         // delete category
+        categoryRepository.deleteById(categoryId);
     }
 }
