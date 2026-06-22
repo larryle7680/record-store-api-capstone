@@ -22,15 +22,16 @@ public class ProductsController
         this.productService = productService;
     }
 
-    @GetMapping("")
+    @GetMapping()
     @PreAuthorize("permitAll()")
-    public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
+    public List<Product> search(@RequestParam(name="categoryId", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) Double minPrice,
                                 @RequestParam(name="maxPrice", required = false) Double maxPrice,
                                 @RequestParam(name="subCategory", required = false) String subCategory)
     {
         return productService.search(categoryId, minPrice, maxPrice, subCategory);
     }
+
 
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
