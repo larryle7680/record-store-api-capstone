@@ -47,14 +47,14 @@ public class ShoppingCartService
     public CartItem addToCart(int userId, int productId) {
 
         //Make sure the item exists, By finding the userID and ProductID
-        Optional <CartItem> existingItem =
+        CartItem existingItem =
                 shoppingCartRepository.findByUserIdAndProductId(userId, productId);
 
         //If there's an item that already exists in the CartItem, It'll just add another count to the quantity and save it
-        if (existingItem.isPresent()) {
-            CartItem cartItem = existingItem.get();
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
-            return shoppingCartRepository.save(cartItem);
+        if (existingItem != null)
+        {
+            existingItem.setQuantity(existingItem.getQuantity() + 1);
+            return shoppingCartRepository.save(existingItem);
         }
 
         //Create new cartItem and set UserId,ProductId and its quantity
@@ -64,6 +64,34 @@ public class ShoppingCartService
         cartItem.setQuantity(1);
 
         return shoppingCartRepository.save(cartItem);
+    }
+
+    //Update the ShoppingCart
+    public void updateQuantity(int userId, int productId, int quantity){
+
+        //Goes through <CartItem> in the database to find userId and the item that you're trying to update
+        CartItem cartItem = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
+
+        //If there are no items to be found it'll throw this exception
+        if(cartItem == null){
+            throw new RuntimeException("Can't find the item");
+        }
+
+        //go into cartItem and used a setter to changed the quantity
+        cartItem.setQuantity(quantity);
+
+        //Now save it
+        shoppingCartRepository.save(cartItem);
+
+    }
+
+    public void removeItems(int userId, int productId){
+
+        CartItem cartItem = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
+
+        if(cartItem != null){
+            shoppingCartRepository.delete(cartItem);
+        }
     }
 
 

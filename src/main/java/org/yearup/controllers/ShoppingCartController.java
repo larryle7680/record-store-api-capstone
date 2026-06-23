@@ -1,5 +1,10 @@
 package org.yearup.controllers;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
@@ -27,20 +32,51 @@ public class ShoppingCartController
         int userId = user.getId();
 
         // use the shoppingCartService to get all items in the cart and return the cart
-        return null;
+        return shoppingCartService.getByUserId(userId);
     }
 
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be added)
     // return the updated cart with status 201 Created
+    @PostMapping("/products/{productId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> addToCart(@PathVariable int productId, Principal principal){
+
+        //This will get the username of whoever is logged in and store it into userId
+        int userId = userService.getIdByUsername(principal.getName());
+
+        //Then it'll go into service and activate the .addToCart() method
+        shoppingCartService.addToCart(userId, productId);
+
+        //If it got created, it should return a 201 with this line of code.
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
 
     // add a PUT method to update an existing product in the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
+    @PutMapping("/products/{productid}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> update(@PathVariable int productId, @RequestParam int quantity, Principal principal){
+
+        int userId = userService.getIdByUsername((principal.getName()));
+
+        shoppingCartService.updateQuantity(userId, productId, quantity);
+
+        return ResponseEntity.noContent().build();
+    }
 
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart  - return the (now empty) cart so the front end can refresh it (200 OK)
+    @DeleteMapping("/products/{productId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> removeItems(@PathVariable int productId, Principal principal){
+        int userId = userService.getIdByUsername(principal.getName());
 
+        shoppingCartService.removeItems(userId, productId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
