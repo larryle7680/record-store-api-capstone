@@ -1,13 +1,11 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
-import org.yearup.models.CartItem;
-import org.yearup.models.Product;
-import org.yearup.models.ShoppingCart;
-import org.yearup.models.ShoppingCartItem;
+import org.yearup.models.*;
 import org.yearup.repository.ShoppingCartRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShoppingCartService
@@ -46,7 +44,27 @@ public class ShoppingCartService
     // add additional methods here
     //Creating a cartItem to add to cart
     //Use CartItem because I'm trying to save individual things into a collection
-    public CartItem addToCart(CartItem cartItem){
+    public CartItem addToCart(int userId, int productId) {
+
+        //Make sure the item exists, By finding the userID and ProductID
+        Optional <CartItem> existingItem =
+                shoppingCartRepository.findByUserIdAndProductId(userId, productId);
+
+        //If there's an item that already exists in the CartItem, It'll just add another count to the quantity and save it
+        if (existingItem.isPresent()) {
+            CartItem cartItem = existingItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + 1);
+            return shoppingCartRepository.save(cartItem);
+        }
+
+        //Create new cartItem and set UserId,ProductId and its quantity
+        CartItem cartItem = new CartItem();
+        cartItem.setUserId(userId);
+        cartItem.setProductId(productId);
+        cartItem.setQuantity(1);
+
         return shoppingCartRepository.save(cartItem);
     }
+
+
 }
