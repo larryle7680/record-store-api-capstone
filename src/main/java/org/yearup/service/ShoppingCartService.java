@@ -25,6 +25,7 @@ public class ShoppingCartService
         // load the user's cart rows
         List<CartItem> items = shoppingCartRepository.findByUserId(userId);
         ShoppingCart cart = new ShoppingCart();
+
          //look up each product, and build the ShoppingCart
         for(CartItem cartItem : items){
 
@@ -85,13 +86,9 @@ public class ShoppingCartService
 
     }
 
-    public void removeItems(int userId, int productId){
-
-        CartItem cartItem = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
-
-        if(cartItem != null){
-            shoppingCartRepository.delete(cartItem);
-        }
+    public void clearCart(int userId) {
+        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+        shoppingCartRepository.deleteAll(cartItems);
     }
 
 
