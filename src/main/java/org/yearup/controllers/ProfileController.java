@@ -1,12 +1,10 @@
 package org.yearup.controllers;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Profile;
-import org.yearup.models.User;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.server.ResponseStatusException;
 import org.yearup.repository.UserRepository;
 import org.yearup.service.ProfileService;
 
@@ -31,29 +29,28 @@ public class ProfileController {
     }
 
 
-    @GetMapping()
-    @PreAuthorize("isAuthenticated()")
-    public User getProfile(Principal principal)
-    {
-        //Find the username, then put it into a variable to be able to return it later
-        User user = userRepository.findByUsername(principal.getName());
 
-        //Throw this exception if user isn't found
-        if (user == null)
+        @GetMapping
+        @PreAuthorize("isAuthenticated()")
+        public ResponseEntity<Profile> getProfile(Principal principal)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            //Principal represents the user that is currently logged in
+            //It'll grab the name that is currently logged in
+            //Then, it'll go into profileService and .getProfile(Larry)
+            Profile profile = profileService.getProfile(principal.getName());
+
+            //Return 200 when getting the profile succeed
+            return ResponseEntity.ok(profile);
         }
 
-        return user;
-    }
 
     @PutMapping()
     @PreAuthorize("isAuthenticated()")
-    public Profile updateProfile(@RequestBody Profile updateProfile, Principal principal)
+    public ResponseEntity<Profile> updateProfile(@RequestBody Profile updateProfile, Principal principal)
     {
-        return profileService.updateProfile(
-                principal.getName(),
-                updateProfile);
+        Profile profile = profileService.updateProfile(principal.getName(), updateProfile);
+
+        return ResponseEntity.ok(profile);
     }
 
 }

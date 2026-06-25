@@ -1,5 +1,6 @@
 package org.yearup.controllers;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,14 +36,14 @@ public class ProductsController
 
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
-    public Product getById(@PathVariable int id)
+    public ResponseEntity<Product> getById(@PathVariable int id)
     {
         Product product = productService.getById(id);
 
         if (product == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return product;
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping()
@@ -55,12 +56,14 @@ public class ProductsController
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product product)
+    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product)
     {
         if (productService.getById(id) == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return productService.update(id, product);
+        Product updatedProduct =  productService.update(id, product);
+
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("{id}")

@@ -32,7 +32,7 @@ public ShoppingCartController(ShoppingCartService shoppingCartService, UserServi
     // each method in this controller requires a Principal object as a parameter
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ShoppingCart getCart(Principal principal)
+    public ResponseEntity<ShoppingCart> getCart(Principal principal)
     {
         // get the currently logged-in username
         String userName = principal.getName();
@@ -41,7 +41,9 @@ public ShoppingCartController(ShoppingCartService shoppingCartService, UserServi
         int userId = user.getId();
 
         // use the shoppingCartService to get all items in the cart and return the cart
-        return shoppingCartService.getByUserId(userId);
+        ShoppingCart shoppingCart = shoppingCartService.getByUserId(userId);
+
+        return ResponseEntity.ok(shoppingCart);
     }
 
     // add a POST method to add a product to the cart - the url should be

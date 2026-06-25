@@ -55,10 +55,11 @@ public class CategoriesController
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
-    public List<Product> getProductsById(@PathVariable int categoryId)
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId)
     {
-        // get a list of product by categoryId
-        return productService.listByCategoryId(categoryId);
+        List<Product> products = categoryService.listByCategoryId(categoryId);
+
+        return ResponseEntity.ok(products);
     }
 
     // add annotation to call this method for a POST action
@@ -76,13 +77,15 @@ public class CategoriesController
     // add annotation to ensure that only an ADMIN can call this function
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category)
+    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         // update the category by id and return the updated category (200 OK)
         if (categoryService.getById(id) == null)
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return categoryService.update(id, category);
+        Category updatedCategory = categoryService.update(id, category);
+
+        return ResponseEntity.ok(updatedCategory);
     }
 
 
