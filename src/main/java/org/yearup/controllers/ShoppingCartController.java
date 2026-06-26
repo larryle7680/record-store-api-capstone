@@ -70,11 +70,11 @@ public ShoppingCartController(ShoppingCartService shoppingCartService, UserServi
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
     @PutMapping("/products/{productId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> update(@PathVariable int productId, @RequestParam int quantity, Principal principal){
+    public ResponseEntity<Void> update(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
 
         int userId = userService.getIdByUsername((principal.getName()));
 
-        shoppingCartService.updateQuantity(userId, productId, quantity);
+        shoppingCartService.updateQuantity(userId, productId, item.getQuantity());
 
         return ResponseEntity.noContent().build();
     }
