@@ -62,6 +62,7 @@ public class ShoppingCartService
         CartItem cartItem = new CartItem();
         cartItem.setUserId(userId);
         cartItem.setProductId(productId);
+        //First time adding to the cart
         cartItem.setQuantity(1);
 
         return shoppingCartRepository.save(cartItem);
