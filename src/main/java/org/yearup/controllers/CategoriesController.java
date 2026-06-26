@@ -57,8 +57,14 @@ public class CategoriesController
     @GetMapping("{categoryId}/products")
     public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId)
     {
+
+        //Returning a list of products
+        //Depending on what CategoryId its on it'll show a list of products withing that ID
+        //It'll call on categoryService to run the listByCategoryId method
+        //in the parenthesis will get replaced with its actual number to find all the product with the same CategoryId
         List<Product> products = categoryService.listByCategoryId(categoryId);
 
+        //Returns 200 if it succeeded
         return ResponseEntity.ok(products);
     }
 

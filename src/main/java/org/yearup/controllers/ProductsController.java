@@ -58,11 +58,15 @@ public class ProductsController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product)
     {
+        //If not found it'll throw an exception
         if (productService.getById(id) == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        // JPA is finding the id and product and replacing it inside the parenthesis
+        //Then, calling the produce service to update using those fields and saving it into updatedProduct variable
         Product updatedProduct =  productService.update(id, product);
 
+        //Then it's returning a 200 with the ResponseEntity
         return ResponseEntity.ok(updatedProduct);
     }
 
